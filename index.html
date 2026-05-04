@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>☣ DEADZONE</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="stylesheet" href="css/menu.css">
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════════════ MAIN MENU ══ -->
+<div id="menu">
+  <canvas id="menu-bg"></canvas>
+  <div id="menu-content">
+
+    <div id="title-block">
+      <div id="title-biohazard">☣</div>
+      <h1 id="title-text">DEADZONE</h1>
+      <p id="title-sub">Survive · Build · Fight · Together</p>
+    </div>
+
+    <!-- MAIN BUTTONS -->
+    <div id="menu-main" class="menu-screen active">
+      <button class="mbtn primary" onclick="showScreen('screen-slots')">
+        <span class="mbtn-icon">▶</span><span class="mbtn-label">PLAY</span>
+      </button>
+      <button class="mbtn" onclick="showScreen('screen-join')">
+        <span class="mbtn-icon">⚡</span><span class="mbtn-label">JOIN GAME</span>
+      </button>
+      <button class="mbtn" onclick="showScreen('screen-howto')">
+        <span class="mbtn-icon">?</span><span class="mbtn-label">HOW TO PLAY</span>
+      </button>
+      <button class="mbtn" onclick="showScreen('screen-settings')">
+        <span class="mbtn-icon">⚙</span><span class="mbtn-label">SETTINGS</span>
+      </button>
+    </div>
+
+    <!-- GAME SLOTS -->
+    <div id="screen-slots" class="menu-screen">
+      <h2 class="screen-title">☣ SELECT SAVE SLOT</h2>
+      <div id="slots-grid"></div>
+      <button class="mbtn back-btn" onclick="showScreen('menu-main')">← BACK</button>
+    </div>
+
+    <!-- NEW GAME FORM -->
+    <div id="screen-newgame" class="menu-screen">
+      <h2 class="screen-title" id="ng-title">NEW WORLD — SLOT 1</h2>
+      <div class="form-two-col">
+        <div class="form-col">
+          <div class="field">
+            <label>Your Name</label>
+            <input id="ng-name" maxlength="16" placeholder="Enter your name">
+          </div>
+          <div class="field">
+            <label>World Name</label>
+            <input id="ng-world" value="My World" maxlength="24">
+          </div>
+          <div class="field">
+            <label>World Seed <span class="hint">(blank = random)</span></label>
+            <input id="ng-seed" placeholder="Up to 15 digits e.g. 420691337">
+          </div>
+          <div class="field" id="diff-field">
+            <label>Difficulty</label>
+            <div class="diff-picker">
+              <div class="diff-opt" data-diff="easy" onclick="pickDiff(this)">
+                <span class="diff-icon">🌿</span>
+                <span class="diff-name">EASY</span>
+                <span class="diff-desc">Keep weapons on death</span>
+              </div>
+              <div class="diff-opt active" data-diff="normal" onclick="pickDiff(this)">
+                <span class="diff-icon">⚔</span>
+                <span class="diff-name">NORMAL</span>
+                <span class="diff-desc">Drop everything on death</span>
+              </div>
+              <div class="diff-opt hardcore" data-diff="hardcore" onclick="pickDiff(this)">
+                <span class="diff-icon">☠</span>
+                <span class="diff-name">HARDCORE</span>
+                <span class="diff-desc">World deleted on death</span>
+              </div>
+            </div>
+          </div>
+          <div class="field">
+            <label>PVP (Multiplayer)</label>
+            <div class="pvp-row">
+              <label class="toggle-switch">
+                <input type="checkbox" id="ng-pvp">
+                <span class="toggle-track"><span class="toggle-thumb"></span></span>
+              </label>
+              <span class="pvp-label">Off by default — players cannot hurt each other</span>
+            </div>
+          </div>
+        </div>
+        <div class="form-col">
+          <div class="field">
+            <label>Multiplayer Method</label>
+            <div class="tabs" id="host-tabs">
+              <div class="tab active" onclick="setHostMethod('solo',this)">Solo</div>
+              <div class="tab" onclick="setHostMethod('peer',this)">Free P2P</div>
+              <div class="tab" onclick="setHostMethod('ably',this)">Ably</div>
+            </div>
+            <div id="host-solo-info" class="info-box">
+              <b>Single player</b> — no network needed. Play offline instantly. No room code required.
+            </div>
+            <div id="host-peer-info" class="info-box hidden">
+              Uses <b>PeerJS</b> — free, no signup needed.<br>
+              Share a 6-letter <b>Room Code</b> with friends.<br>
+              Works across different networks ~80% of the time.
+            </div>
+            <div id="host-ably-info" class="info-box hidden">
+              Uses <b>Ably Realtime</b> — 100% cross-network.<br>
+              Free tier at <b>ably.com</b> (no credit card needed).
+              <div class="field" style="margin-top:10px">
+                <label>Ably API Key</label>
+                <input id="h-ably-key" placeholder="xxxxx.yyyyy:zzzzz">
+              </div>
+            </div>
+          </div>
+          <div class="world-preview" id="world-preview">
+            <div class="wp-title">WORLD PREVIEW</div>
+            <canvas id="seed-preview" width="200" height="200"></canvas>
+            <div class="wp-info" id="wp-info">Enter a seed to preview</div>
+          </div>
+        </div>
+      </div>
+      <div class="btn-row">
+        <button class="mbtn primary" onclick="startNewGame()">▶ START GAME</button>
+        <button class="mbtn back-btn" onclick="showScreen('screen-slots')">← BACK</button>
+      </div>
+    </div>
+
+    <!-- JOIN GAME -->
+    <div id="screen-join" class="menu-screen">
+      <h2 class="screen-title">⚡ JOIN A GAME</h2>
+      <div class="form-grid">
+        <div class="field">
+          <label>Your Name</label>
+          <input id="j-name" maxlength="16" placeholder="Enter your name">
+        </div>
+        <div class="field">
+          <label>Connection Method</label>
+          <div class="tabs" id="join-tabs">
+            <div class="tab active" onclick="setJoinMethod('peer',this)">Free P2P</div>
+            <div class="tab" onclick="setJoinMethod('ably',this)">Ably</div>
+          </div>
+        </div>
+        <div id="join-peer-fields">
+          <div class="field">
+            <label>Room Code</label>
+            <input id="j-code" placeholder="ABC123" style="text-transform:uppercase;letter-spacing:6px;font-size:1.4rem;text-align:center">
+          </div>
+        </div>
+        <div id="join-ably-fields" class="hidden">
+          <div class="field"><label>Ably API Key</label>
+            <input id="j-ably-key" placeholder="xxxxx.yyyyy:zzzzz"></div>
+          <div class="field"><label>Room Code</label>
+            <input id="j-ably-code" placeholder="ABC123" style="text-transform:uppercase;letter-spacing:6px;font-size:1.4rem;text-align:center"></div>
+        </div>
+      </div>
+      <div class="btn-row">
+        <button class="mbtn primary" onclick="joinGame()">⚡ JOIN</button>
+        <button class="mbtn back-btn" onclick="showScreen('menu-main')">← BACK</button>
+      </div>
+    </div>
+
+    <!-- HOW TO PLAY -->
+    <div id="screen-howto" class="menu-screen">
+      <h2 class="screen-title">? HOW TO PLAY</h2>
+      <div class="howto-grid">
+        <div class="howto-card">
+          <h3>🎮 Controls</h3>
+          <table class="ctrl-table">
+            <tr><td>WASD</td><td>Move</td></tr>
+            <tr><td>Shift</td><td>Sprint (uses stamina)</td></tr>
+            <tr><td>C</td><td>Crouch (less detection)</td></tr>
+            <tr><td>Left Click</td><td>Attack / Mine / Loot</td></tr>
+            <tr><td>Right Click</td><td>Place / Open station</td></tr>
+            <tr><td>E</td><td>Inventory</td></tr>
+            <tr><td>Tab</td><td>Crafting</td></tr>
+            <tr><td>F</td><td>Revive teammate</td></tr>
+            <tr><td>T</td><td>Proximity chat</td></tr>
+            <tr><td>Esc</td><td>Pause menu</td></tr>
+            <tr><td>1–9 / Scroll</td><td>Hotbar</td></tr>
+          </table>
+        </div>
+        <div class="howto-card">
+          <h3>🔫 Guns &amp; Ammo</h3>
+          <table class="ctrl-table">
+            <tr><td>M1911</td><td>.45 ACP — reliable sidearm</td></tr>
+            <tr><td>Revolver</td><td>.357 — high damage, slow</td></tr>
+            <tr><td>Desert Eagle</td><td>.50 BMG — powerful pistol</td></tr>
+            <tr><td>Uzi / MP5</td><td>9mm — fast SMG</td></tr>
+            <tr><td>M16 / AK-47</td><td>5.56 / 7.62 — assault rifles</td></tr>
+            <tr><td>Sniper</td><td>.50 BMG — extreme range</td></tr>
+            <tr><td>Mossberg / DB</td><td>12ga — close range</td></tr>
+            <tr><td>Crossbow</td><td>Bolts — silent</td></tr>
+            <tr><td>Railgun</td><td>Rail slug — endgame</td></tr>
+            <tr><td>RPG</td><td>Rockets — area damage</td></tr>
+          </table>
+          <p class="tip" style="margin-top:6px">Craft ammo: <b>Copper Ingot + Gunpowder</b> at Workbench</p>
+        </div>
+        <div class="howto-card">
+          <h3>⚒ Crafting Tiers</h3>
+          <p class="tip">
+            <b>By hand</b> — basic items<br>
+            <b>Workbench T1</b> — tools, weapons, armour<br>
+            <b>Workbench T2</b> — advanced gear<br>
+            <b>Small Furnace</b> — basic smelting<br>
+            <b>Medium Furnace</b> — faster smelting<br>
+            <b>Large Furnace</b> — bulk smelting<br>
+            <b>Stove</b> — fast food cooking
+          </p>
+        </div>
+        <div class="howto-card">
+          <h3>🌙 Day / Night</h3>
+          <p class="tip">Night slowly spawns up to <b>30 zombies</b>. New variants: <b>Speedy</b> (fast, fragile), <b>Crawler</b> (slow, silent), <b>Tank</b> (huge HP). Watch for <b>Raiders</b> — hostile survivors.</p>
+        </div>
+        <div class="howto-card">
+          <h3>📦 Inventory</h3>
+          <p class="tip">Grid-based inventory. Items take up space (e.g. water bottle = 4×1). Find <b>Backpacks</b> (S/M/L) to expand capacity. Crouch reduces zombie detection range.</p>
+        </div>
+        <div class="howto-card">
+          <h3>📻 Communication</h3>
+          <p class="tip"><b>Proximity chat</b> — only nearby players see your messages. Find a <b>Radio Tower</b> and craft a <b>Walkie-Talkie</b> (electronic parts + wire + CPU + battery) for long-range chat.</p>
+        </div>
+      </div>
+      <button class="mbtn back-btn" onclick="showScreen('menu-main')">← BACK</button>
+    </div>
+
+    <!-- SETTINGS -->
+    <div id="screen-settings" class="menu-screen">
+      <h2 class="screen-title">⚙ SETTINGS</h2>
+      <div class="settings-grid">
+
+        <div class="settings-section">
+          <div class="settings-section-title">AUDIO</div>
+          <div class="setting-row">
+            <span class="setting-label">Master Volume</span>
+            <div class="slider-wrap">
+              <input type="range" class="styled-slider" id="vol-master" min="0" max="100" value="80"
+                oninput="updateSlider(this,'vol-label')">
+              <span class="slider-val" id="vol-label">80%</span>
+            </div>
+          </div>
+          <div class="setting-row">
+            <span class="setting-label">SFX Volume</span>
+            <div class="slider-wrap">
+              <input type="range" class="styled-slider" id="vol-sfx" min="0" max="100" value="80"
+                oninput="updateSlider(this,'vol-sfx-label')">
+              <span class="slider-val" id="vol-sfx-label">80%</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="settings-section">
+          <div class="settings-section-title">GRAPHICS</div>
+          <div class="setting-row">
+            <span class="setting-label">Render Distance</span>
+            <div class="slider-wrap">
+              <input type="range" class="styled-slider" id="render-dist" min="2" max="5" value="3"
+                oninput="updateSlider(this,'render-dist-label')">
+              <span class="slider-val" id="render-dist-label">3</span>
+            </div>
+          </div>
+          <div class="setting-row">
+            <span class="setting-label">Particle Effects</span>
+            <label class="toggle-switch">
+              <input type="checkbox" id="particles-on" checked>
+              <span class="toggle-track"><span class="toggle-thumb"></span></span>
+            </label>
+          </div>
+          <div class="setting-row">
+            <span class="setting-label">Show FPS</span>
+            <label class="toggle-switch">
+              <input type="checkbox" id="show-fps">
+              <span class="toggle-track"><span class="toggle-thumb"></span></span>
+            </label>
+          </div>
+        </div>
+
+      </div>
+      <div class="btn-row">
+        <button class="mbtn primary" onclick="saveSettings()">
+          <span class="mbtn-icon">✓</span><span class="mbtn-label">SAVE</span>
+        </button>
+        <button class="mbtn" onclick="resetSettings()">
+          <span class="mbtn-icon">↺</span><span class="mbtn-label">RESET DEFAULTS</span>
+        </button>
+        <button class="mbtn back-btn" onclick="showScreen('menu-main')">← BACK</button>
+      </div>
+    </div>
+
+  </div><!-- /menu-content -->
+</div><!-- /menu -->
+
+<!-- ══════════════════════════════════════════ CONFIRM DELETE DIALOG ══ -->
+<div id="confirm-overlay" class="hidden">
+  <div id="confirm-dialog">
+    <div id="confirm-icon">🗑</div>
+    <div id="confirm-title">DELETE WORLD?</div>
+    <div id="confirm-body"></div>
+    <div class="confirm-btns">
+      <button class="cbtn cbtn-danger" id="confirm-yes">DELETE</button>
+      <button class="cbtn cbtn-cancel" id="confirm-no">CANCEL</button>
+    </div>
+  </div>
+</div>
+
+<!-- LOADING SCREEN -->
+<div id="loading" class="hidden">
+  <div id="loading-inner">
+    <div id="loading-biohazard">☣</div>
+    <p id="loading-text">Generating world...</p>
+    <div id="loading-bar-wrap"><div id="loading-bar"></div></div>
+    <p id="loading-tip"></p>
+    <div id="loading-debug-wrap">
+      <button id="loading-debug-btn" onclick="toggleDebug()" style="background:none;border:1px solid #223322;color:#334433;font-family:monospace;font-size:.7rem;padding:3px 10px;cursor:pointer;margin-top:8px;">show debug</button>
+      <div id="loading-debug" style="display:none;margin-top:6px;background:#020602;border:1px solid #1a2a1a;padding:8px;width:360px;max-height:160px;overflow-y:auto;font-size:.7rem;color:#4a8a4a;font-family:monospace;text-align:left;"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ROOM CODE TOAST -->
+<div id="room-toast" class="hidden">
+  <span>Room Code:</span>
+  <span id="room-code-val"></span>
+  <button onclick="copyRoomCode()" title="Copy">⧉</button>
+  <button onclick="document.getElementById('room-toast').classList.add('hidden')" title="Close">✕</button>
+</div>
+
+<!-- GAME CANVAS -->
+<canvas id="canvas" class="hidden"></canvas>
+
+<!-- CHAT INPUT -->
+<div id="chat-input-wrap" class="hidden">
+  <div id="chat-input-label">PROXIMITY CHAT</div>
+  <input id="chat-input" placeholder="Type message… Enter to send, Esc to cancel" maxlength="120">
+</div>
+
+<!-- CDN Libraries -->
+<script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+<script src="https://cdn.ably.com/lib/ably.min-2.js"></script>
+
+<!-- Game scripts -->
+<script src="js/constants.js"></script>
+<script src="js/noise.js"></script>
+<script src="js/world.js"></script>
+<script src="js/crafting.js"></script>
+<script src="js/entities.js"></script>
+<script src="js/weather.js"></script>
+<script src="js/sound.js"></script>
+<script src="js/network_peer.js"></script>
+<script src="js/network_ably.js"></script>
+<script src="js/game.js"></script>
+<script src="js/vfx.js"></script>
+<script src="js/renderer.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
