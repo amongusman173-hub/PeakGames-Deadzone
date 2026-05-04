@@ -456,6 +456,8 @@ class UI {
       const {id,x,y}=this._hoveredInv;
       this._drawTooltip(ctx,id,x,y,W,H);
     }
+    ctx.restore(); // end animation transform
+    ctx.globalAlpha=1;
   }
 
   _drawTooltip(ctx,id,mx,my,W,H){
@@ -477,9 +479,6 @@ class UI {
     ctx.font='10px monospace'; ctx.fillStyle='#8aaa80';
     for(let i=1;i<lines.length;i++) ctx.fillText(lines[i],tx+6,ty+14+i*15);
   }
-  // End inventory animation
-  // (ctx.restore called at end of _drawInventory)
-
   // ── Crafting menu ─────────────────────────────────────────────────────────────
   _drawCrafting(ctx,p,W,H,anim=1){
     const pw=580, ph=Math.min(560,H-60);
@@ -570,6 +569,8 @@ class UI {
       ctx.fillText('CRAFT',rect.x+rect.w-28,rect.y+rowH/2+4);
       ctx.textAlign='left';
     }
+    ctx.restore(); // end animation transform
+    ctx.globalAlpha=1;
   }
 
   // ── Pause menu ────────────────────────────────────────────────────────────────
