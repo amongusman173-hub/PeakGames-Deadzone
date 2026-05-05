@@ -728,6 +728,112 @@ class Renderer {
       ctx.fillStyle='#5a3010'; ctx.fillRect(-s*0.35,-s*0.3,s*0.7,s*0.55);
       ctx.fillStyle='#c060c0'; ctx.fillRect(-s*0.3,-s*0.1,s*0.6,s*0.3);
       ctx.fillStyle='#e0e0e0'; ctx.fillRect(-s*0.3,-s*0.3,s*0.6,s*0.22);
+    } else if(id==='rope'||id==='cloth'){
+      ctx.strokeStyle=id==='rope'?'#c8a820':'#c0c0c0'; ctx.lineWidth=2;
+      for(let i=0;i<3;i++){
+        ctx.beginPath(); ctx.moveTo(-s*0.3,-s*0.2+i*s*0.2); ctx.lineTo(s*0.3,-s*0.1+i*s*0.2); ctx.stroke();
+      }
+    } else if(id==='coal'||id==='flint'||id==='sulfur'){
+      const cc={coal:'#2a2a2a',flint:'#606060',sulfur:'#c8c820'}[id];
+      ctx.fillStyle=cc;
+      ctx.beginPath(); ctx.moveTo(0,-s*0.3); ctx.lineTo(s*0.25,s*0.15); ctx.lineTo(-s*0.25,s*0.15); ctx.closePath(); ctx.fill();
+    } else if(id==='iron_ingot'||id==='gold_ingot'||id==='copper_ingot'){
+      const ic={iron_ingot:'#c0c0c0',gold_ingot:'#ffd700',copper_ingot:'#c87820'}[id];
+      ctx.fillStyle=ic; ctx.fillRect(-s*0.35,-s*0.2,s*0.7,s*0.4);
+      ctx.strokeStyle='rgba(0,0,0,0.4)'; ctx.strokeRect(-s*0.35,-s*0.2,s*0.7,s*0.4);
+    } else if(id==='gunpowder'||id==='ammo_45acp'||id==='ammo_9mm'||id==='ammo_556'||id==='ammo_762'||id==='ammo_50bmg'||id==='ammo_12ga'||id==='ammo_357'||id==='ammo_bolt'||id==='ammo_rail'||id==='ammo_rocket'){
+      ctx.fillStyle='#c8a820'; ctx.fillRect(-s*0.15,-s*0.35,s*0.3,s*0.5);
+      ctx.fillStyle='#909090'; ctx.fillRect(-s*0.12,-s*0.42,s*0.24,s*0.1);
+    } else if(id==='arrow'){
+      ctx.strokeStyle='#8b6438'; ctx.lineWidth=2;
+      ctx.beginPath(); ctx.moveTo(-s*0.35,0); ctx.lineTo(s*0.35,0); ctx.stroke();
+      ctx.fillStyle='#c0c0c0';
+      ctx.beginPath(); ctx.moveTo(s*0.35,0); ctx.lineTo(s*0.15,-s*0.15); ctx.lineTo(s*0.15,s*0.15); ctx.closePath(); ctx.fill();
+    } else if(id==='medkit'){
+      ctx.fillStyle='#e03030'; ctx.fillRect(-s*0.3,-s*0.3,s*0.6,s*0.6);
+      ctx.fillStyle='#fff'; ctx.fillRect(-s*0.08,-s*0.25,s*0.16,s*0.5);
+      ctx.fillRect(-s*0.25,-s*0.08,s*0.5,s*0.16);
+    } else if(id==='bandage'){
+      ctx.fillStyle='#e0e0e0'; ctx.fillRect(-s*0.3,-s*0.15,s*0.6,s*0.3);
+      ctx.strokeStyle='#e03030'; ctx.lineWidth=1.5;
+      ctx.beginPath(); ctx.moveTo(-s*0.2,-s*0.05); ctx.lineTo(s*0.2,-s*0.05); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(-s*0.2,s*0.05); ctx.lineTo(s*0.2,s*0.05); ctx.stroke();
+    } else if(id==='antibiotics'||id==='vitamins'){
+      ctx.fillStyle=id==='antibiotics'?'#4080ff':'#ffcc00';
+      ctx.beginPath(); ctx.arc(0,0,s*0.3,0,Math.PI*2); ctx.fill();
+      ctx.fillStyle='#fff'; ctx.font=`bold ${s*0.3}px monospace`; ctx.textAlign='center';
+      ctx.fillText(id==='antibiotics'?'Rx':'V',0,s*0.1); ctx.textAlign='left';
+    } else if(id==='fishing_rod'){
+      ctx.strokeStyle='#8b6438'; ctx.lineWidth=2;
+      ctx.beginPath(); ctx.moveTo(-s*0.3,s*0.35); ctx.lineTo(s*0.3,-s*0.35); ctx.stroke();
+      ctx.strokeStyle='#c0c0c0'; ctx.lineWidth=1;
+      ctx.beginPath(); ctx.moveTo(s*0.3,-s*0.35); ctx.lineTo(s*0.35,s*0.1); ctx.stroke();
+      ctx.fillStyle='#c0c0c0'; ctx.beginPath(); ctx.arc(s*0.35,s*0.15,3,0,Math.PI*2); ctx.fill();
+    } else if(id==='hoe'){
+      ctx.strokeStyle='#8b6438'; ctx.lineWidth=2;
+      ctx.beginPath(); ctx.moveTo(-s*0.2,s*0.35); ctx.lineTo(s*0.2,-s*0.35); ctx.stroke();
+      ctx.fillStyle='#909090'; ctx.fillRect(s*0.1,-s*0.42,s*0.25,s*0.12);
+    } else if(id==='watering_can'){
+      ctx.fillStyle='#3c78c8'; ctx.fillRect(-s*0.25,-s*0.2,s*0.4,s*0.35);
+      ctx.strokeStyle='#2a5a9a'; ctx.lineWidth=1.5;
+      ctx.beginPath(); ctx.moveTo(s*0.15,-s*0.05); ctx.lineTo(s*0.4,-s*0.25); ctx.stroke();
+    } else if(id==='flashlight'){
+      ctx.fillStyle='#404040'; ctx.fillRect(-s*0.35,-s*0.12,s*0.55,s*0.24);
+      ctx.fillStyle='rgba(255,240,100,0.8)';
+      ctx.beginPath(); ctx.moveTo(s*0.2,-s*0.2); ctx.lineTo(s*0.45,0); ctx.lineTo(s*0.2,s*0.2); ctx.closePath(); ctx.fill();
+    } else if(id==='battery'){
+      ctx.fillStyle='#404040'; ctx.fillRect(-s*0.2,-s*0.3,s*0.4,s*0.55);
+      ctx.fillStyle='#c0c0c0'; ctx.fillRect(-s*0.1,-s*0.38,s*0.2,s*0.1);
+      ctx.fillStyle='#32c832'; ctx.fillRect(-s*0.15,-s*0.22,s*0.3,s*0.35);
+    } else if(id==='fur'||id==='warm_coat'||id==='fur_coat'){
+      ctx.fillStyle='#8b6438'; ctx.fillRect(-s*0.3,-s*0.3,s*0.6,s*0.55);
+      ctx.fillStyle='#c8a060';
+      for(let i=0;i<4;i++) ctx.fillRect(-s*0.25+i*s*0.15,-s*0.25,s*0.1,s*0.45);
+    } else if(id==='door_wood'){
+      ctx.fillStyle='#8b5a2b'; ctx.fillRect(-s*0.25,-s*0.4,s*0.5,s*0.75);
+      ctx.strokeStyle='#5a3010'; ctx.lineWidth=1;
+      ctx.strokeRect(-s*0.2,-s*0.35,s*0.4,s*0.3);
+      ctx.strokeRect(-s*0.2,s*0.0,s*0.4,s*0.28);
+      ctx.fillStyle='rgba(255,200,50,0.9)'; ctx.beginPath(); ctx.arc(s*0.15,s*0.14,3,0,Math.PI*2); ctx.fill();
+    } else if(id==='lockpick'){
+      ctx.strokeStyle='#c0c0c0'; ctx.lineWidth=2;
+      ctx.beginPath(); ctx.moveTo(-s*0.3,s*0.3); ctx.lineTo(s*0.2,-s*0.3); ctx.stroke();
+      ctx.beginPath(); ctx.arc(s*0.2,-s*0.3,s*0.1,0,Math.PI*2); ctx.stroke();
+    } else if(id==='hammer'){
+      ctx.strokeStyle='#8b6438'; ctx.lineWidth=2;
+      ctx.beginPath(); ctx.moveTo(-s*0.3,s*0.3); ctx.lineTo(s*0.15,-s*0.15); ctx.stroke();
+      ctx.fillStyle='#909090'; ctx.fillRect(s*0.1,-s*0.35,s*0.25,s*0.22);
+    } else if(id==='boat'){
+      ctx.fillStyle='#8b6438';
+      ctx.beginPath(); ctx.moveTo(-s*0.4,s*0.1); ctx.lineTo(s*0.4,s*0.1); ctx.lineTo(s*0.3,s*0.35); ctx.lineTo(-s*0.3,s*0.35); ctx.closePath(); ctx.fill();
+      ctx.strokeStyle='#5a3010'; ctx.lineWidth=1.5;
+      ctx.beginPath(); ctx.moveTo(0,s*0.1); ctx.lineTo(0,-s*0.3); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(0,-s*0.3); ctx.lineTo(s*0.3,-s*0.05); ctx.stroke();
+    } else if(id==='paper'||id==='map_item'||id==='atlas'){
+      ctx.fillStyle='#e8d8a0'; ctx.fillRect(-s*0.3,-s*0.35,s*0.6,s*0.65);
+      ctx.strokeStyle='#c0a060'; ctx.lineWidth=1;
+      if(id==='map_item'||id==='atlas'){
+        ctx.strokeRect(-s*0.25,-s*0.3,s*0.5,s*0.55);
+        ctx.beginPath(); ctx.moveTo(-s*0.2,-s*0.1); ctx.lineTo(s*0.2,-s*0.1); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(-s*0.2,s*0.05); ctx.lineTo(s*0.2,s*0.05); ctx.stroke();
+      }
+    } else if(id==='walkie_talkie'){
+      ctx.fillStyle='#404040'; ctx.fillRect(-s*0.2,-s*0.35,s*0.4,s*0.6);
+      ctx.fillStyle='#32c832'; ctx.fillRect(-s*0.15,-s*0.3,s*0.3,s*0.12);
+      ctx.strokeStyle='#c0c0c0'; ctx.lineWidth=1.5;
+      ctx.beginPath(); ctx.moveTo(0,-s*0.35); ctx.lineTo(0,-s*0.5); ctx.stroke();
+    } else if(id==='electronic_parts'||id==='wire'||id==='cpu'){
+      ctx.fillStyle='#2a4a2a'; ctx.fillRect(-s*0.3,-s*0.3,s*0.6,s*0.6);
+      ctx.strokeStyle='#32c832'; ctx.lineWidth=1;
+      ctx.strokeRect(-s*0.25,-s*0.25,s*0.5,s*0.5);
+      if(id==='wire'){ ctx.beginPath(); ctx.moveTo(-s*0.3,0); ctx.lineTo(s*0.3,0); ctx.stroke(); }
+      if(id==='cpu'){ ctx.fillStyle='#32c832'; ctx.fillRect(-s*0.15,-s*0.15,s*0.3,s*0.3); }
+    } else if(id==='backpack_small'||id==='backpack_medium'||id==='backpack_large'){
+      const bc=id==='backpack_large'?'#4a6a4a':id==='backpack_medium'?'#6a4a2a':'#8b6438';
+      ctx.fillStyle=bc; ctx.fillRect(-s*0.3,-s*0.3,s*0.6,s*0.55);
+      ctx.strokeStyle='rgba(0,0,0,0.4)'; ctx.strokeRect(-s*0.3,-s*0.3,s*0.6,s*0.55);
+      ctx.strokeStyle='rgba(255,255,255,0.3)'; ctx.lineWidth=1.5;
+      ctx.beginPath(); ctx.moveTo(-s*0.15,-s*0.3); ctx.lineTo(-s*0.15,-s*0.45); ctx.lineTo(s*0.15,-s*0.45); ctx.lineTo(s*0.15,-s*0.3); ctx.stroke();
     } else {
       // Generic — coloured square with first letter
       ctx.fillStyle='rgba(125,200,50,0.3)'; ctx.fillRect(-s*0.3,-s*0.3,s*0.6,s*0.6);

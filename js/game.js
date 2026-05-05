@@ -608,8 +608,7 @@ class Game {
           events.push({type:'revived',pid:action.revivePid});
         }
       }
-      if(action.action==='hoe'&&p.inventory['hoe']>0){
-        const tile=this.getTile(wx,wy);
+      if(action.action==='hoe'&&p.inventory['hoe']>0){        const tile=this.getTile(wx,wy);
         if(FARM_TILES.has(tile)){ this.setTile(wx,wy,T.FARMLAND); events.push({type:'tile_update',wx,wy,tile:T.FARMLAND}); }
       }
       if(action.action==='plant'&&action.seedId){
@@ -632,6 +631,34 @@ class Game {
           events.push({type:'tile_update',wx,wy,tile:T.FARMLAND});
         }
       }
+    }
+
+    else if(type==='fish'){
+      // Fishing rod — must be near water, takes time, gives random fish/items
+      if(p.isDown) return null;
+      if(!(p.inventory['fishing_rod']>0)) return null;
+      const {wx,wy}=action;
+      const tile=this.getTile(wx,wy);
+      if(!WATER_TILES.has(tile)) return null;
+      const dist=Math.hypot(wx+0.5-(p.x+0.5),wy+0.5-(p.y+0.5));
+      if(dist>3) return null;
+      // Random catch
+      const roll=this.rng();
+      let caught=null;
+      if(roll<0.35)      caught={item:'raw_meat',qty:1,name:'Fish'};
+      else if(roll<0.55) caught={item:'dirty_water',qty:1,name:'Dirty Water'};
+      else if(roll<0.65) caught={item:'empty_bottle',qty:1,name:'Empty Bottle'};
+      else if(roll<0.70) caught={item:'rope',qty:1,name:'Rope'};
+      else if(roll<0.72) caught={item:'iron_ore',qty:1,name:'Iron Ore'};
+      else               caught=null; // nothing
+      if(caught){
+        p.inventory[caught.item]=(p.inventory[caught.item]||0)+caught.qty;
+        events.push({type:'fish_caught',pid,item:caught.item,qty:caught.qty,name:caught.name});
+      } else {
+        events.push({type:'fish_caught',pid,item:null,name:'Nothing'});
+      }
+      // Small durability drain on rod
+      p.damageDurability('fishing_rod',1);
     }
 
     else if(type==='craft'){

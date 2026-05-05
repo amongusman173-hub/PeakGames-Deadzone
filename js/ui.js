@@ -340,6 +340,9 @@ class UI {
     const px=W/2-pw/2, py=H/2-ph/2;
 
     // Scale + fade open animation
+    // Draw backdrop BEFORE transform to avoid mirror effect
+    ctx.fillStyle=`rgba(0,0,0,${0.5*anim})`;
+    ctx.fillRect(0,0,W,H);
     ctx.save();
     ctx.translate(W/2,H/2);
     ctx.scale(0.88+0.12*anim, 0.88+0.12*anim);
@@ -484,7 +487,9 @@ class UI {
     const pw=580, ph=Math.min(560,H-60);
     const px=W/2-pw/2, py=H/2-ph/2;
 
-    // Scale + fade animation
+    // Backdrop before transform
+    ctx.fillStyle=`rgba(0,0,0,${0.5*anim})`;
+    ctx.fillRect(0,0,W,H);
     ctx.save();
     ctx.translate(W/2,H/2);
     ctx.scale(0.88+0.12*anim, 0.88+0.12*anim);

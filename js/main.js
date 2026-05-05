@@ -618,6 +618,10 @@ function handleServerMsg(msg, myPid){
     if(typeof sound!=='undefined') sound.onMeleeHit();
   }
   if(msg.type==='gun_jammed'&&_ui) _ui.notify('GUN JAMMED! Repair it.','#ff8c00',3);
+  if(msg.type==='fish_caught'&&msg.pid===myPid&&_ui){
+    if(msg.item) _ui.notify(`Caught: ${ITEMS[msg.item]||msg.item}!`,'#3c78c8',3);
+    else _ui.notify('Nothing on the line...','#888',2);
+  }
   if(msg.type==='perfect_block'&&msg.pid===myPid&&_ui) _ui.notify('PERFECT BLOCK!','#7dc832',2);
   if(msg.type==='block_hit'&&msg.pid===myPid&&_ui) _ui.notify('Blocked!','#c8a820',1);
   if(msg.type==='player_blocking'){
@@ -737,6 +741,10 @@ function _handleLocalEvent(ev, myPid){
   if(ev.type==='loot_collected'&&_ui&&_renderer) _ui.showLootAnim(ev.wx,ev.wy,_renderer);
   if(ev.type==='block_update'){ const g=clientGame||_currentGame; if(g){ const b=PlacedBlock.fromJSON(ev.block); g.blocks[b.blockId]=b; } }
   if(ev.type==='notify'&&ev.pid===myPid&&_ui) _ui.notify(ev.text,ev.col||'#fff',2);
+  if(ev.type==='fish_caught'&&_ui){
+    if(ev.item) _ui.notify(`Caught: ${ITEMS[ev.item]||ev.item}!`,'#3c78c8',3);
+    else _ui.notify('Nothing on the line...','#888',2);
+  }
 }
 
 function startGame(game, net, myPid, slot, isHost){
@@ -860,6 +868,18 @@ function startGame(game, net, myPid, slot, isHost){
           else net.sendToHost(action);
         }
       }
+      // Fishing rod — use near water
+      if(me.inventory?.fishing_rod>0||_ui.hotbar[_ui.hotbarSel]==='fishing_rod'){
+        for(let dy2=-3;dy2<=3;dy2++) for(let dx2=-3;dx2<=3;dx2++){
+          const wx=Math.floor(me.x)+dx2, wy=Math.floor(me.y)+dy2;
+          if(WATER_TILES.has(game.getTile(wx,wy))&&Math.hypot(wx+0.5-(me.x+0.5),wy+0.5-(me.y+0.5))<=3){
+            const action={type:'fish',wx,wy,pid:myPid};
+            if(isHost){ const evs=game.handleAction(myPid,action); if(evs) for(const ev of evs){ net.broadcast(ev); _handleLocalEvent(ev,myPid); } }
+            else net.sendToHost(action);
+            break;
+          }
+        }
+      }
     }
     for(let i=1;i<=9;i++) if(e.code===`Digit${i}`) _ui.hotbarSel=i-1;
   });
@@ -952,9 +972,9 @@ function startGame(game, net, myPid, slot, isHost){
     } else if(e.button===2){
       const held=_ui.hotbar[_ui.hotbarSel];
       const me2=game.players[myPid]; if(!me2) return;
-      // Check workbench/furnace
+      // Check workbench/furnace — use Math.floor for correct negative coords
       for(const b of Object.values(game.blocks)){
-        if(b.x===(wx|0)&&b.y===(wy|0)){
+        if(b.x===Math.floor(wx)&&b.y===Math.floor(wy)){
           if(b.blockType==='workbench'||b.blockType==='workbench_t2'){ _ui.craftStation='workbench'; _ui.showCraft=true; return; }
           if(b.blockType==='furnace'||b.blockType==='furnace_small'||b.blockType==='furnace_medium'||b.blockType==='furnace_large'||b.blockType==='stove'){ _ui.craftStation='furnace'; _ui.showCraft=true; return; }
         }
@@ -962,9 +982,9 @@ function startGame(game, net, myPid, slot, isHost){
       // Hammer — repair/deconstruct
       if(held==='hammer'){
         for(const b of Object.values(game.blocks)){
-          if(b.x===(wx|0)&&b.y===(wy|0)){
+          if(b.x===Math.floor(wx)&&b.y===Math.floor(wy)){
             const mode=_ui._hammerMode||'repair';
-            const action={type:'hammer',wx:wx|0,wy:wy|0,mode,pid:myPid};
+            const action={type:'hammer',wx:Math.floor(wx),wy:Math.floor(wy),mode,pid:myPid};
             if(isHost){ const evs=game.handleAction(myPid,action); if(evs) for(const ev of evs) net.broadcast(ev); }
             else net.sendToHost(action);
             return;
